@@ -1,0 +1,26 @@
+{
+  "context-menu": {
+    "atom-text-editor": [
+      {
+        "label": "Toggle maze-solver",
+        "command": "maze-solver:toggle"
+      }
+    ]
+  },
+  "menu": [
+    {
+      "label": "Packages",
+      "submenu": [
+        {
+          "label": "maze-solver",
+          "submenu": [
+            {
+              "label": "Toggle",
+              "command": "maze-solver:toggle"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
