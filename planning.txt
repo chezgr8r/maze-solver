@@ -15,3 +15,29 @@
 # IF DISTANCE/WEIGHT DOESN'T MATTER, HOW DO WE CHOOSE WHICH PATH?
 #    IDEA 1: Random
 #    IDEA 2: Research other algorithms
+
+# HOW TO ORGANIZE PROJECT:
+# BIG QUESTION: How to integrate GUI with algorithm?
+# Look at Physics Sim for inspiration on how to do GUI with pygame
+#    hardest part of this is creating the visualization of the maze solver given a working algorithm
+
+# BASIC STRUCTURE/PROCESS
+# 1. GUI pops up with default size grid that can be changed with text input (use outside package) or button input
+# 2. GUI has three other box options (ie input that can work with grid cells)
+#     2.1. Start, end (both have to be placed for algorithm to start), walls
+#     2.2. Last input button starts the algorithm. Checks to make sure start and end have been placed. Design with intent to add more algorithms
+# 3. Send 'maze' to maze-to-graph converter, then to graph algorithm
+# STEP 3 MIGHT BE BAD
+#     Design maze in GUI to be represented as a graph, ie each cell has all the necessary arguments and those arguments are changed with
+#     user input but the visualization only uses the basic 'is it black or white?'
+#         ISSUE: Might not be an issue, but runtime might suffer from having to make a bunch of checks and changes for every click,
+#                ex. changing a cell to black means deleting it from all of its neighbors' lists of neighbors, which also means checking
+#                    to see that each neighbor exists
+#
+# HOW TO DESIGN ALGORITHM TO RETURN EACH STEP TO GUI?
+#     IDEA 1: Algorithm only runs one step at a time and returns visited cells. Probably inefficient? Throwing a lot of data back and forth
+#     IDEA 2: Algorithm runs ahead of time and GraphNode() has an extra argument for which step it was visited at, therefore returning a visited
+#             arraylist and running a while loop (break when returned visited arraylist is empty) with the last step showing the path (or condition
+#             for if a path doesn't exist)
+#
+# ********* BUILD GUI FIRST *********
