@@ -1,5 +1,8 @@
 # maze-solver project
 
-Currently working on a maze solving project. Still in development, but take a peak if you like. Just know that code may not work on its own right now.
+A visualization of Dijkstra's algorithm using a grid interface!
 
-![A screenshot of your package](https://f.cloud.github.com/assets/69169/2290250/c35d867a-a017-11e3-86be-cd7c5bf3ff9b.gif)
+Create a maze (or any series of obstacles between the start and end cells) and 
+run Dijkstra's algorithm to see the steps it takes and the final path (if one exists).
+
+![Maze in Action](maze-working.gif)
