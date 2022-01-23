@@ -137,7 +137,12 @@ def dijkstra_recur(step): # step might not even be necessary
 
     vis_nodes.append(last_vis_nodes)
     last_vis_nodes = temp_neighbors
-    if (not last_vis_nodes) or (not found_red):
+    # OR IS NOT CORRECT HERE
+    # SHOULD GO TO ELSE IF found_red == True or last_vis_nodes is empty
+    if not((found_red) or (not last_vis_nodes)): #didn't catch found_red for some reason # BECAUSE NOT LAST_VIS_NODES
+        print("last_vis_nodes and found_red before recur")
+        print(last_vis_nodes)
+        print(found_red)
         dijkstra_recur(step + 1)
     else:
         print("unvis_nodes and found_red after recur")

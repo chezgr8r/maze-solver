@@ -86,6 +86,7 @@ class ClearGrid(Button):
         super().__init__(pos, color, size)
     def on_click(self):
         global GRID, WHITE
+        print("attempted clear")
         for r in range(len(GRID)):
             for c in range(len(GRID[0])):
                 GRID[r][c].fill = WHITE
@@ -141,6 +142,14 @@ class DijkstraButton(Button):
         #       then in the drawing section of main() have an if statement for if
         #       AnimateDij run animate_dij() function
 
+class ResetButton(Button):
+    def __init__(self, pos, color, size):
+        super().__init__(pos, color, size)
+    def on_click(self, START, END, DIJKSTRA_STEPS):
+        #global START, END, DIJKSTRA_STEPS
+        print(START)
+        reset(START, END, DIJKSTRA_STEPS)#START, END, DIJKSTRA_STEPS
+
 # Create and draw the grid
 def make_grid(grid):
     cell_sprites = pygame.sprite.Group()
@@ -187,3 +196,16 @@ def randomize_grid():
             else:
                 randre = random.randrange(row_len)
         GRID[randre][randce].fill = RED
+
+def reset(START, END, DIJKSTRA_STEPS):#START, END, DIJKSTRA_STEPS
+    global GRID, WHITE, GREEN, RED
+    # reset all in DIJKSTRA_STEPS on GRID to WHITE except START and END
+    print(START)
+    for stp in DIJKSTRA_STEPS:
+        for p in stp:
+            if p == START:
+                GRID[p[0]][p[1]].fill = GREEN
+            elif p == END:
+                GRID[p[0]][p[1]].fill = RED
+            else:
+                GRID[p[0]][p[1]].fill = WHITE
