@@ -43,44 +43,23 @@
 # ********* BUILD GUI FIRST *********
 
 
-# OLD DIJKSTRA_RECUR:
-def dijkstra_recur(stp):
-    global unvis_nodes, vis_nodes, last_vis_nodes
-    if (not not unvis_nodes):
-        # for loop check for all the neighbors of all the visited nodes in unvisited nodes
-        # check the neighbors found for the red node, give them all their step value
-        # add all of the unvisited node neighbors to the visited node list
-        # if red node found, return that node, otherwise recur
-        lvn_nbs = set()
-        prev_poss = []
-        lvn_nods = []
-        red_nb = None
-        for vn in last_vis_nodes:
-            for neb in vn.neighbors:
-                lvn_nbs.add(neb)
-                prev_poss.append((neb, vn.cell.pos))
+# SPEED CODE
+class SpeedButton(Button):
+    def __init__(self, pos, color, size, speed):
+        super().__init__(pos, color, size)
+        self.speed = speed
+    def on_click(self):
+        return self.speed
 
-        lvn_nbs = list(lvn_nbs)
+# Speed buttons
+speed_sprites = pygame.sprite.Group()
+one_sec_button = SpeedButton((750, 100), GREEN, (40, 40), 1)
+half_sec_button = SpeedButton((750, 150), YELLOW, (40, 40), 0.5)
+quarter_sec_button = SpeedButton((750, 200), RED, (40, 40), 0.25)
+speed_sprites.add(one_sec_button, half_sec_button, quarter_sec_button)
 
-        for nb in lvn_nbs:
-            nb_node = list(n for n in unvis_nodes if n.cell == nb)[0]
-            prv_ps = list(p for p in prev_pos if p[0] == nb_node.cell)[0]
-            nb_node.cell.step = stp
-            nb_node.cell.prevCell = prv_ps #########
-            lvn_nods.append(nb_node)
-            if nb_node.cell.fill == RED:
-                red_nb = nb_node
+for spd in speed_sprites:
+    if spd.rect.collidepoint(x,y):
+        SPEED = spd.on_click()
 
-        vis_nodes = vis_nodes + last_vis_nodes
-        last_vis_nodes = lvn_nbs
-
-        if red_nb != None:
-            vis_nodes = vis_nodes + last_vis_nodes
-            return red_nb
-        else:
-            dijkstra_recur(stp + 1)
-    else:
-        vis_nodes = vis_nodes + last_vis_nodes
-        return None
-        #do I have to check if red has been found? or can I just exit with None?
-        # return none
+speed_sprites.draw(screen)

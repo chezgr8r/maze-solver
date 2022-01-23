@@ -29,6 +29,7 @@ def create_text(col_text, row_text, clear_text, wall_text, break_wall_text, star
 # Main function
 def main():
     global DIJKSTRA_FAIL, DIJKSTRA_ANIMATE, DIJKSTRA_STEPS, START, END
+
     # PyGame window initialization
     pygame.display.set_caption("Maze Solver")
     icon = pygame.image.load("mazeicon.png").convert_alpha()
@@ -64,14 +65,13 @@ def main():
     destroy_wall = ChangeCell((310, 28), WHITE, (20, 20), WHITE)
     place_start = ChangeCell((310, 58), GREEN, (20, 20), GREEN)
     place_end = ChangeCell((435, 58), RED, (20, 20), RED)
-    rand_grid = RandomizeGrid((435, 28), YELLOW, (20, 20))
-    input_sprites.add(col_up, col_down, row_up, row_down, build_wall, destroy_wall, place_start, place_end, rand_grid)
+    input_sprites.add(col_up, col_down, row_up, row_down, build_wall, destroy_wall, place_start, place_end)
 
     # Clear button
-    # KNOWN BUG: Random button needs to reset START, END, and DIJKSTRA_STEPS
     clear_sprites = pygame.sprite.Group()
     clear_grid = ClearGrid((222, 28), RED, (90, 25))
-    clear_sprites.add(clear_grid)
+    rand_grid = RandomizeGrid((435, 28), YELLOW, (20, 20))
+    clear_sprites.add(clear_grid, rand_grid)
 
     # Algorithm button(s)
     algo_sprites = pygame.sprite.Group()
@@ -108,6 +108,7 @@ def main():
                         # Clear START/END history
                         START = None
                         END = None
+                        DIJKSTRA_STEPS = []
                 for alg in algo_sprites:
                     if alg.rect.collidepoint(x,y):
                         # Assign global variables for drawing
@@ -129,7 +130,7 @@ def main():
         if DIJKSTRA_FAIL: # Fails if start/end aren't placed or if grid needs to be reset
             fontf = pygame.font.SysFont('comicsansms', 32)
             fail_text = font1.render('PLEASE INCLUDE START AND END OR RESET', True, BLACK)
-            screen.blit(fail_text, (180, 750))
+            screen.blit(fail_text, (140, 750))
             pygame.display.update()
             sleep(1.5)
             DIJKSTRA_FAIL = False
@@ -148,7 +149,7 @@ def main():
                 grid_sprites = make_grid(GRID)
                 grid_sprites.draw(screen)
                 pygame.display.update()
-                sleep(0.5)
+                sleep(0.4)
 
             # Different end results if Dijkstra reaches end or not
             if last != None:

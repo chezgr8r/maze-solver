@@ -132,6 +132,7 @@ class ResetButton(Button):
         super().__init__(pos, color, size)
     def on_click(self, START, END, DIJKSTRA_STEPS):
         reset(START, END, DIJKSTRA_STEPS)
+        
 
 # Create and draw the grid
 def make_grid(grid):
