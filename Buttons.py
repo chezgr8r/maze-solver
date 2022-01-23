@@ -1,13 +1,5 @@
 import pygame, sys, random
-from Structs import *
-from GlobalVariables import *
-
-# Function to create a new, blank cell
-def new_cell(pos):
-    return Cell(WHITE, -1, pos, (-1, -1))
-
-# Create global grid
-GRID = [[new_cell((0, 0))]]
+from Dijkstra import *
 
 # Button sprite
 class Button(pygame.sprite.Sprite):
@@ -25,10 +17,10 @@ class ColUpBtn(Button):
         global COL_NUM
         global GRID
         if COL_NUM < 30:
+            for i in range(len(GRID)): #THIS LOGIC DOESN'T WORK
+                GRID[i].append(new_cell((i, COL_NUM)))
             COL_NUM += 1
-            for i in GRID:
-                i.append(new_cell((i, COL_NUM)))
-            #print(GRID)
+            print(GRID)
 
 class ColDownBtn(Button):
     def __init__(self, pos, color, size):
@@ -39,7 +31,7 @@ class ColDownBtn(Button):
             for i in GRID:
                 i.pop()
             COL_NUM -= 1
-            #print(GRID)
+            print(GRID)
 
 class RowUpBtn(Button):
     def __init__(self, pos, color, size):
@@ -48,11 +40,11 @@ class RowUpBtn(Button):
         global ROW_NUM
         if ROW_NUM < 30:
             new_row = []
-            ROW_NUM += 1
             for i in range(len(GRID[0])):
                 new_row.append(new_cell((ROW_NUM, i)))
             GRID.append(new_row)
-            #print(GRID)
+            ROW_NUM += 1
+            print(GRID)
 
 class RowDownBtn(Button):
     def __init__(self, pos, color, size):
@@ -62,7 +54,7 @@ class RowDownBtn(Button):
         if ROW_NUM > 1:
             GRID.pop()
             ROW_NUM -= 1
-            #print(GRID)
+            print(GRID)
 
 class CellBtn(pygame.sprite.Sprite):
     def __init__(self, pos, color, size, coord):
@@ -112,6 +104,43 @@ class RandomizeGrid(Button):
     def on_click(self):
         randomize_grid()
 
+class DijkstraButton(Button):
+    def __init__(self, pos, color, size):
+        super().__init__(pos, color, size)
+    def on_click(self):
+        global DIJKSTRA_ANIMATE, DIJKSTRA_FAIL, DIJKSTRA_STEPS
+        DIJKSTRA_FAIL = False
+        DIJKSTRA_ANIMATE = False
+        DIJKSTRA_STEPS = dijkstra()
+        print(DIJKSTRA_STEPS)
+        if DIJKSTRA_STEPS == None:
+            DIJKSTRA_FAIL = True
+        else:
+            DIJKSTRA_ANIMATE = True
+        print("dij animate")
+        print(DIJKSTRA_ANIMATE) # for some reason MazeSolver isn't recognizing this change
+        # DIJKSTRA_ANIMATE is getting assigned here, how can I check for its assignment in MazeSolver?
+        return DIJKSTRA_ANIMATE, DIJKSTRA_FAIL, DIJKSTRA_STEPS
+        '''
+        DIJKSTRA_END = dij_tup[1]
+        vis = dij_tup[0]
+        i = 0
+        while not not vis:
+            new_step = []
+            for v in range(len(vis)):
+                if v.cell.step == i:
+                    new_step.append(v)
+            DIJKSTRA_STEPS.append(new_step)
+            i += 1
+        DIJKSTRA_ANIMATE = True
+        '''
+        # figure out how to animate dijkstra's
+        # make sure to check for None in dij_tup[1]
+        # idea: use global variables to create list of lists where each list is a step
+        #       taken from dij_tup[0] (<-- visited nodes) and set AnimateDij to True,
+        #       then in the drawing section of main() have an if statement for if
+        #       AnimateDij run animate_dij() function
+
 # Create and draw the grid
 def make_grid(grid):
     cell_sprites = pygame.sprite.Group()
@@ -145,9 +174,16 @@ def randomize_grid():
         randc = random.randrange(col_len)
         GRID[randr][randc].fill = GREEN
 
-        randre = random.randrange(row_len)
-        if randre == randr:
-            randce = random.choice(list(set(range(col_len)) - set([randc])))
+        if col_len > 1:
+            randre = random.randrange(row_len)
+            if randre == randr:
+                randce = random.choice(list(set(range(col_len)) - set([randc])))
+            else:
+                randce = random.randrange(col_len)
         else:
             randce = random.randrange(col_len)
+            if randce == randc:
+                randre = random.choice(list(set(range(row_len)) - set([randr])))
+            else:
+                randre = random.randrange(row_len)
         GRID[randre][randce].fill = RED

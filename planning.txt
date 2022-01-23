@@ -41,3 +41,46 @@
 #             for if a path doesn't exist)
 #
 # ********* BUILD GUI FIRST *********
+
+
+# OLD DIJKSTRA_RECUR:
+def dijkstra_recur(stp):
+    global unvis_nodes, vis_nodes, last_vis_nodes
+    if (not not unvis_nodes):
+        # for loop check for all the neighbors of all the visited nodes in unvisited nodes
+        # check the neighbors found for the red node, give them all their step value
+        # add all of the unvisited node neighbors to the visited node list
+        # if red node found, return that node, otherwise recur
+        lvn_nbs = set()
+        prev_poss = []
+        lvn_nods = []
+        red_nb = None
+        for vn in last_vis_nodes:
+            for neb in vn.neighbors:
+                lvn_nbs.add(neb)
+                prev_poss.append((neb, vn.cell.pos))
+
+        lvn_nbs = list(lvn_nbs)
+
+        for nb in lvn_nbs:
+            nb_node = list(n for n in unvis_nodes if n.cell == nb)[0]
+            prv_ps = list(p for p in prev_pos if p[0] == nb_node.cell)[0]
+            nb_node.cell.step = stp
+            nb_node.cell.prevCell = prv_ps #########
+            lvn_nods.append(nb_node)
+            if nb_node.cell.fill == RED:
+                red_nb = nb_node
+
+        vis_nodes = vis_nodes + last_vis_nodes
+        last_vis_nodes = lvn_nbs
+
+        if red_nb != None:
+            vis_nodes = vis_nodes + last_vis_nodes
+            return red_nb
+        else:
+            dijkstra_recur(stp + 1)
+    else:
+        vis_nodes = vis_nodes + last_vis_nodes
+        return None
+        #do I have to check if red has been found? or can I just exit with None?
+        # return none
