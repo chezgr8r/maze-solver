@@ -1,7 +1,7 @@
 import pygame, sys, random
 from Dijkstra import *
 
-# Button sprite
+# Basic button sprite
 class Button(pygame.sprite.Sprite):
     def __init__(self, pos, color, size):
         super().__init__()
@@ -10,6 +10,7 @@ class Button(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = pos
 
+# Button for increasing the number of columns
 class ColUpBtn(Button):
     def __init__(self, pos, color, size):
         super().__init__(pos, color, size)
@@ -20,8 +21,8 @@ class ColUpBtn(Button):
             for i in range(len(GRID)): #THIS LOGIC DOESN'T WORK
                 GRID[i].append(new_cell((i, COL_NUM)))
             COL_NUM += 1
-            print(GRID)
 
+# Button for decreasing the number of columns
 class ColDownBtn(Button):
     def __init__(self, pos, color, size):
         super().__init__(pos, color, size)
@@ -31,8 +32,8 @@ class ColDownBtn(Button):
             for i in GRID:
                 i.pop()
             COL_NUM -= 1
-            print(GRID)
 
+# Button for increasing the number of rows
 class RowUpBtn(Button):
     def __init__(self, pos, color, size):
         super().__init__(pos, color, size)
@@ -44,8 +45,8 @@ class RowUpBtn(Button):
                 new_row.append(new_cell((ROW_NUM, i)))
             GRID.append(new_row)
             ROW_NUM += 1
-            print(GRID)
 
+# Button for decreasing the number of rows
 class RowDownBtn(Button):
     def __init__(self, pos, color, size):
         super().__init__(pos, color, size)
@@ -54,8 +55,8 @@ class RowDownBtn(Button):
         if ROW_NUM > 1:
             GRID.pop()
             ROW_NUM -= 1
-            print(GRID)
 
+# Makes a cell into a button
 class CellBtn(pygame.sprite.Sprite):
     def __init__(self, pos, color, size, coord):
         super().__init__()
@@ -67,6 +68,7 @@ class CellBtn(pygame.sprite.Sprite):
         self.coord = coord
     def on_click(self):
         global CELL_CHANGE, GRID, GREEN, RED
+        # Check for existing start/end cells before placing new ones
         if not CELL_CHANGE in (GREEN, RED):
             GRID[self.coord[0]][self.coord[1]].fill = CELL_CHANGE
         else:
@@ -81,16 +83,17 @@ class CellBtn(pygame.sprite.Sprite):
             if (not(startExists) and (CELL_CHANGE == GREEN)) or not(endExists) and (CELL_CHANGE == RED):
                 GRID[self.coord[0]][self.coord[1]].fill = CELL_CHANGE
 
+# Button that clears the grid completely
 class ClearGrid(Button):
     def __init__(self, pos, color, size):
         super().__init__(pos, color, size)
     def on_click(self):
         global GRID, WHITE
-        print("attempted clear")
         for r in range(len(GRID)):
             for c in range(len(GRID[0])):
                 GRID[r][c].fill = WHITE
 
+# Button that changes the color of a grid cell
 class ChangeCell(Button):
     def __init__(self, pos, color, size, new_color):
         super().__init__(pos, color, size)
@@ -99,12 +102,14 @@ class ChangeCell(Button):
         global CELL_CHANGE
         CELL_CHANGE = self.new_color
 
+# Button that randomizes the grid
 class RandomizeGrid(Button):
     def __init__(self, pos, color, size):
         super().__init__(pos, color, size)
     def on_click(self):
         randomize_grid()
 
+# Button that runs Dijkstra's algorithm
 class DijkstraButton(Button):
     def __init__(self, pos, color, size):
         super().__init__(pos, color, size)
@@ -113,42 +118,20 @@ class DijkstraButton(Button):
         DIJKSTRA_FAIL = False
         DIJKSTRA_ANIMATE = False
         DIJKSTRA_STEPS = dijkstra()
-        print(DIJKSTRA_STEPS)
+
         if DIJKSTRA_STEPS == None:
             DIJKSTRA_FAIL = True
         else:
             DIJKSTRA_ANIMATE = True
-        print("dij animate")
-        print(DIJKSTRA_ANIMATE) # for some reason MazeSolver isn't recognizing this change
-        # DIJKSTRA_ANIMATE is getting assigned here, how can I check for its assignment in MazeSolver?
-        return DIJKSTRA_ANIMATE, DIJKSTRA_FAIL, DIJKSTRA_STEPS
-        '''
-        DIJKSTRA_END = dij_tup[1]
-        vis = dij_tup[0]
-        i = 0
-        while not not vis:
-            new_step = []
-            for v in range(len(vis)):
-                if v.cell.step == i:
-                    new_step.append(v)
-            DIJKSTRA_STEPS.append(new_step)
-            i += 1
-        DIJKSTRA_ANIMATE = True
-        '''
-        # figure out how to animate dijkstra's
-        # make sure to check for None in dij_tup[1]
-        # idea: use global variables to create list of lists where each list is a step
-        #       taken from dij_tup[0] (<-- visited nodes) and set AnimateDij to True,
-        #       then in the drawing section of main() have an if statement for if
-        #       AnimateDij run animate_dij() function
 
+        return DIJKSTRA_ANIMATE, DIJKSTRA_FAIL, DIJKSTRA_STEPS
+
+# Button that resets the board after running Dijkstra's algorithm
 class ResetButton(Button):
     def __init__(self, pos, color, size):
         super().__init__(pos, color, size)
     def on_click(self, START, END, DIJKSTRA_STEPS):
-        #global START, END, DIJKSTRA_STEPS
-        print(START)
-        reset(START, END, DIJKSTRA_STEPS)#START, END, DIJKSTRA_STEPS
+        reset(START, END, DIJKSTRA_STEPS)
 
 # Create and draw the grid
 def make_grid(grid):
@@ -170,6 +153,7 @@ def randomize_grid():
     row_len = len(GRID)
     col_len = len(GRID[0])
 
+    # Randomizes white/black cells
     for r in range(row_len):
         for c in range(col_len):
             rand = random.randrange(10)
@@ -178,6 +162,8 @@ def randomize_grid():
             else:
                 GRID[r][c].fill = WHITE
 
+    # Makes sure its possible to place both a start and end, then makes sure
+    #   to place them in different cells using sets
     if (row_len > 1) or (col_len > 1):
         randr = random.randrange(row_len)
         randc = random.randrange(col_len)
@@ -197,10 +183,10 @@ def randomize_grid():
                 randre = random.randrange(row_len)
         GRID[randre][randce].fill = RED
 
-def reset(START, END, DIJKSTRA_STEPS):#START, END, DIJKSTRA_STEPS
+def reset(START, END, DIJKSTRA_STEPS):
     global GRID, WHITE, GREEN, RED
-    # reset all in DIJKSTRA_STEPS on GRID to WHITE except START and END
-    print(START)
+
+    # Resets all visited cells to blue unless the its the start or end
     for stp in DIJKSTRA_STEPS:
         for p in stp:
             if p == START:

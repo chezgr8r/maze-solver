@@ -1,17 +1,7 @@
 from dataclasses import dataclass
 
-@dataclass
-class Vector2:
-    x: float
-    y: float
-
-@dataclass
-class Vector3:
-    x: float
-    y: float
-    z: float
-
-# datatype for each cell/node
+# Datatype for each cell/node
+# step no longer necessary, should remove this at some point
 @dataclass
 class Cell:
     fill: (int, int, int)
