@@ -70,7 +70,7 @@ def dijkstra():
             elif (GRID[r][c].fill == BLUE) or (GRID[r][c].fill == YELLOW):
                 anyBlue = True
     if (duplicate or anyBlue) or ((startPos == None) or (endPos == None)):
-        return None
+        return []
     else:
         # Add all non-black nodes to unvis_nodes
         for r in range(len(GRID)):

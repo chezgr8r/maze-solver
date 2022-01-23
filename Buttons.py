@@ -117,11 +117,13 @@ class DijkstraButton(Button):
         global DIJKSTRA_ANIMATE, DIJKSTRA_FAIL, DIJKSTRA_STEPS
         DIJKSTRA_FAIL = False
         DIJKSTRA_ANIMATE = False
-        DIJKSTRA_STEPS = dijkstra()
-
-        if DIJKSTRA_STEPS == None:
+        temp_steps = dijkstra()
+        print(DIJKSTRA_STEPS)
+        print(temp_steps)
+        if temp_steps == []:
             DIJKSTRA_FAIL = True
         else:
+            DIJKSTRA_STEPS = temp_steps
             DIJKSTRA_ANIMATE = True
 
         return DIJKSTRA_ANIMATE, DIJKSTRA_FAIL, DIJKSTRA_STEPS
@@ -132,7 +134,7 @@ class ResetButton(Button):
         super().__init__(pos, color, size)
     def on_click(self, START, END, DIJKSTRA_STEPS):
         reset(START, END, DIJKSTRA_STEPS)
-        
+
 
 # Create and draw the grid
 def make_grid(grid):
